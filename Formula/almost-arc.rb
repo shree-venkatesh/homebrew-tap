@@ -25,12 +25,19 @@ class AlmostArc < Formula
             exit 1
           fi
           exec "#{libexec}/install.sh" "$@" ;;
+        update|upgrade)
+          shift
+          "#{HOMEBREW_PREFIX}/bin/brew" update
+          "#{HOMEBREW_PREFIX}/bin/brew" upgrade almost-arc
+          # run the newly installed version's wrapper
+          exec "#{HOMEBREW_PREFIX}/bin/almost-arc" install "$@" ;;
         uninstall) shift; exec "#{libexec}/uninstall.sh" "$@" ;;
         -v|--version|version) echo "almost-arc #{version}" ;;
         *)
           echo "Usage: almost-arc <command>"
           echo
-          echo "  install     Install or update Almost Arc in Zen (quit Zen first)"
+          echo "  install     Install Almost Arc into Zen again, e.g. after a Zen update (quit Zen first)"
+          echo "  update      Get the latest Almost Arc from Homebrew and install it (quit Zen first)"
           echo "  uninstall   Remove Almost Arc from your Zen profile"
           echo "  --version   Print the installed version"
           [ -z "${1:-}" ] || [ "$1" = "help" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || exit 1
@@ -45,7 +52,8 @@ class AlmostArc < Formula
       Homebrew only downloads Almost Arc. To put it into Zen, quit Zen and run:
         almost-arc install
 
-      Run it again after `brew upgrade almost-arc` and after every Zen update
+      Later, `almost-arc update` gets the newest Almost Arc and installs it.
+      Run `almost-arc install` again after every Zen update
       (Zen updates remove the script loader).
     EOS
   end
