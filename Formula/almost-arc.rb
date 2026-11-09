@@ -11,6 +11,27 @@ class AlmostArc < Formula
       #!/bin/bash
       # almost-arc: installs Almost Arc into your Zen profile (Homebrew wrapper).
       set -euo pipefail
+
+      # --beta: install the newest vX.Y.Z tag straight from GitHub. Tags that never
+      # became a Release (and so never reached Homebrew) are the beta channel.
+      beta_install() {
+        local repo="shree-venkatesh/Almost-Arc" tag tmp
+        # (no backslashes: this text goes through a Ruby heredoc)
+        tag="$(curl -fsSL "https://api.github.com/repos/$repo/tags?per_page=100" |
+          grep -o '"name": *"v[0-9]*[.][0-9]*[.][0-9]*"' | grep -o 'v[0-9.]*' |
+          sed 's/^v//' | sort -t. -k1,1n -k2,2n -k3,3n | tail -n 1)" || true
+        [ -n "$tag" ] || { echo "Couldn't find the latest tag on GitHub." >&2; exit 1; }
+        tmp="$(mktemp -d)"
+        trap "rm -rf '$tmp'" EXIT
+        echo "Downloading Almost Arc $tag (beta)..."
+        curl -fsSL "https://github.com/$repo/archive/refs/tags/v$tag.tar.gz" |
+          tar -xz -C "$tmp" --strip-components 1
+        "$tmp/install.sh"
+        echo
+        echo "You're on the beta ($tag). 'almost-arc install' (without --beta) goes back"
+        echo "to the Homebrew version, #{version}."
+      }
+
       case "${1:-}" in
         install)
           shift
@@ -24,12 +45,13 @@ class AlmostArc < Formula
             echo "then run 'almost-arc install' again."
             exit 1
           fi
+          if [ "${1:-}" = --beta ]; then beta_install; exit; fi
           exec "#{libexec}/install.sh" "$@" ;;
         update|upgrade)
           shift
           "#{HOMEBREW_PREFIX}/bin/brew" update
           "#{HOMEBREW_PREFIX}/bin/brew" upgrade almost-arc
-          # run the newly installed version's wrapper
+          # run the newly installed version's wrapper (passes --beta through)
           exec "#{HOMEBREW_PREFIX}/bin/almost-arc" install "$@" ;;
         uninstall) shift; exec "#{libexec}/uninstall.sh" "$@" ;;
         -v|--version|version) echo "almost-arc #{version}" ;;
@@ -40,6 +62,9 @@ class AlmostArc < Formula
           echo "  update      Get the latest Almost Arc from Homebrew and install it (quit Zen first)"
           echo "  uninstall   Remove Almost Arc from your Zen profile"
           echo "  --version   Print the installed version"
+          echo
+          echo "  --beta      With install or update: use the newest tagged version, which may"
+          echo "              not be in Homebrew yet. A plain 'install' goes back to Homebrew's."
           [ -z "${1:-}" ] || [ "$1" = "help" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || exit 1
           ;;
       esac
