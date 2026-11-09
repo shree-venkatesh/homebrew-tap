@@ -12,7 +12,19 @@ class AlmostArc < Formula
       # almost-arc: installs Almost Arc into your Zen profile (Homebrew wrapper).
       set -euo pipefail
       case "${1:-}" in
-        install)   shift; exec "#{libexec}/install.sh" "$@" ;;
+        install)
+          shift
+          if [ -d "$HOME/.almost-arc" ]; then
+            echo "Almost Arc is already installed with the curl installer (~/.almost-arc)."
+            echo "Either keep using that and remove this one:"
+            echo
+            echo "  brew uninstall almost-arc"
+            echo
+            echo "or remove the curl install first (/usr/local/bin/almost-arc uninstall),"
+            echo "then run 'almost-arc install' again."
+            exit 1
+          fi
+          exec "#{libexec}/install.sh" "$@" ;;
         uninstall) shift; exec "#{libexec}/uninstall.sh" "$@" ;;
         -v|--version|version) echo "almost-arc #{version}" ;;
         *)
