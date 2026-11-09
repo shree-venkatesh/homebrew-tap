@@ -24,9 +24,12 @@ class AlmostArc < Formula
         tmp="$(mktemp -d)"
         trap "rm -rf '$tmp'" EXIT
         echo "Downloading Almost Arc $tag (beta)..."
-        curl -fsSL "https://github.com/$repo/archive/refs/tags/v$tag.tar.gz" |
-          tar -xz -C "$tmp" --strip-components 1
-        "$tmp/install.sh"
+        # the release file (counted downloads), else GitHub's source archive
+        curl -fsSL "https://github.com/$repo/releases/download/v$tag/almost-arc-$tag.tar.gz" -o "$tmp/a.tar.gz" 2>/dev/null ||
+          curl -fsSL "https://github.com/$repo/archive/refs/tags/v$tag.tar.gz" -o "$tmp/a.tar.gz"
+        mkdir "$tmp/app"
+        tar -xzf "$tmp/a.tar.gz" -C "$tmp/app" --strip-components 1
+        "$tmp/app/install.sh"
         echo
         echo "You're on the beta ($tag). 'almost-arc install' (without --beta) goes back"
         echo "to the Homebrew version, #{version}."
