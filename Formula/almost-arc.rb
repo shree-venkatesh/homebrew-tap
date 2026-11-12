@@ -1,8 +1,8 @@
 class AlmostArc < Formula
   desc "Make Zen Browser look and behave like Arc"
   homepage "https://github.com/shree-venkatesh/Almost-Arc"
-  url "https://github.com/shree-venkatesh/Almost-Arc/releases/download/v1.1.8/almost-arc-1.1.8.tar.gz"
-  sha256 "fdaab6b00f59d8763ca45ed15e1ead95c006addfd3784a8324f53a98e703d34c"
+  url "https://github.com/shree-venkatesh/Almost-Arc/releases/download/v1.2.0/almost-arc-1.2.0.tar.gz"
+  sha256 "700af1809cbbd36054735c0144737787211b5fb0a844a316d0b091a518ca5b62"
   license "MPL-2.0"
 
   def install
