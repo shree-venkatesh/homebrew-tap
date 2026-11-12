@@ -29,7 +29,7 @@ class AlmostArc < Formula
           curl -fsSL "https://github.com/$repo/archive/refs/tags/v$tag.tar.gz" -o "$tmp/a.tar.gz"
         mkdir "$tmp/app"
         tar -xzf "$tmp/a.tar.gz" -C "$tmp/app" --strip-components 1
-        "$tmp/app/install.sh"
+        ALMOST_ARC_BETA=1 "$tmp/app/install.sh"
         echo
         echo "You're on the beta ($tag). 'almost-arc install' (without --beta) goes back"
         echo "to the Homebrew version, #{version}."
