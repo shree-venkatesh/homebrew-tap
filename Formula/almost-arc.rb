@@ -61,8 +61,8 @@ class AlmostArc < Formula
         *)
           echo "Usage: almost-arc <command>"
           echo
-          echo "  install     Install Almost Arc into Zen again, e.g. after a Zen update (quit Zen first)"
-          echo "  update      Get the latest Almost Arc from Homebrew and install it (quit Zen first)"
+          echo "  install     Install Almost Arc into Zen again, e.g. after a Zen update (asks to quit Zen if it's open)"
+          echo "  update      Get the latest Almost Arc from Homebrew and install it (asks to quit Zen if it's open)"
           echo "  uninstall   Remove Almost Arc from your Zen profile"
           echo "  --version   Print the installed version"
           echo
@@ -77,7 +77,7 @@ class AlmostArc < Formula
 
   def caveats
     <<~EOS
-      Homebrew only downloads Almost Arc. To put it into Zen, quit Zen and run:
+      Homebrew only downloads Almost Arc. To put it into Zen, run (it asks to quit Zen if it's open):
         almost-arc install
 
       Later, `almost-arc update` gets the newest Almost Arc and installs it.
